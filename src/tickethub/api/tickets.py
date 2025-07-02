@@ -1,8 +1,8 @@
-
-from fastapi import APIRouter, Query
-from tickethub.services.ticket_service import fetch_tickets
-from tickethub.models.ticket import TicketResponse
+from fastapi import APIRouter, Query, HTTPException
+from tickethub.services.ticket_service import fetch_tickets, fetch_ticket_by_id
+from tickethub.models.ticket import TicketResponse, TicketWithSource
 from typing import List, Optional
+import httpx
 
 router = APIRouter()
 
@@ -23,3 +23,11 @@ async def list_tickets(
     if q:
         tickets = [t for t in tickets if q.lower() in t.title.lower()]
     return tickets[skip:skip + limit]
+
+
+@router.get("/{ticket_id}", response_model=TicketWithSource)
+async def get_ticket_details(ticket_id: int):
+    try:
+        return await fetch_ticket_by_id(ticket_id)
+    except httpx.HTTPStatusError:
+        raise HTTPException(status_code=404, detail="Ticket not found")

@@ -1,4 +1,4 @@
-
+from typing import Any
 from pydantic import BaseModel, Field
 
 class TicketResponse(BaseModel):
@@ -7,3 +7,6 @@ class TicketResponse(BaseModel):
     status: str
     priority: str
     assignee: str
+
+class TicketWithSource(TicketResponse):
+    source: dict[str, Any]
