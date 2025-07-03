@@ -8,8 +8,8 @@ router = APIRouter()
 
 @router.get("/", response_model=List[TicketResponse])
 async def list_tickets(
-    status: Optional[str] = Query(None, regex="^(open|closed)$"),
-    priority: Optional[str] = Query(None, regex="^(low|medium|high)$"),
+    status: Optional[str] = Query(None, pattern="^(open|closed)$"),
+    priority: Optional[str] = Query(None, pattern="^(low|medium|high)$"),
     limit: Optional[int] = None
 ):
     tickets = await fetch_tickets()
