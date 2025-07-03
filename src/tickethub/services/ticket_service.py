@@ -9,22 +9,12 @@ async def fetch_tickets():
     async with httpx.AsyncClient() as client:
         resp = await client.get("https://dummyjson.com/todos")
         data = resp.json()["todos"]
-    '''
-    coroutines = [get_username_by_id(todo["userId"]) for todo in data]
-    assignees = await asyncio.gather(*coroutines)
-    '''
 
     tickets = []
-    users = {}
     for item in data:
         status = "closed" if item["completed"] else "open"
         priority = PRIORITY_MAP[item["id"] % 3]
-        assignee = None
-        if (item["userId"] in users.keys()):
-            assignee = users[item["userId"]]
-        else:
-            assignee = await get_username_by_id(item["userId"])
-            users[item["userId"]] = assignee
+        assignee = await get_username_by_id(item["userId"])
         tickets.append(TicketResponse(
             id=item["id"],
             title=item["todo"],
