@@ -14,4 +14,7 @@ docker-build:
 docker-up:
 	docker-compose -f docker/docker-compose.yml up --build
 
+seed-db:
+	PYTHONPATH=src python src/tickethub/db/populate_db.py
+
 .PHONY: run test lint docker-build

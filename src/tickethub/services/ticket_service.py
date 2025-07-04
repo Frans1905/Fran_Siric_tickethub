@@ -1,45 +1,44 @@
 import asyncio
 import httpx
 from .user_service import get_username_by_id
+from tickethub.models.orm import Ticket as TicketORM
+from sqlalchemy import select
+from tickethub.db.db import AsyncSessionLocal
 from tickethub.models.ticket import TicketResponse, TicketWithSource
+from sqlalchemy.orm import selectinload
 
 PRIORITY_MAP = {0: "low", 1: "medium", 2: "high"}
 
 async def fetch_tickets():
-    async with httpx.AsyncClient() as client:
-        resp = await client.get("https://dummyjson.com/todos")
-        data = resp.json()["todos"]
+    async with AsyncSessionLocal() as session:
+        result = await session.execute(select(TicketORM).options(selectinload(TicketORM.assignee)))
+        tickets_orm = result.scalars().all()
 
     tickets = []
-    for item in data:
-        status = "closed" if item["completed"] else "open"
-        priority = PRIORITY_MAP[item["id"] % 3]
-        assignee = await get_username_by_id(item["userId"])
-        tickets.append(TicketResponse(
-            id=item["id"],
-            title=item["todo"],
-            status=status,
-            priority=priority,
-            assignee=assignee,
+    for item in tickets_orm:
+       tickets.append(TicketResponse(
+            id=item.id,
+            title=item.title,
+            status=item.status,
+            priority=item.priority,
+            assignee=item.assignee.name,
         ))
+
     return tickets
 
 
 async def fetch_ticket_by_id(ticket_id: int) -> TicketWithSource:
-    async with httpx.AsyncClient() as client:
-        resp = await client.get(f"https://dummyjson.com/todos/{ticket_id}")
-        resp.raise_for_status()
-        raw = resp.json()
-
-    status = "closed" if raw["completed"] else "open"
-    priority = PRIORITY_MAP[raw["id"] % 3]
-    assignee = await get_username_by_id(raw["userId"])
+    async with AsyncSessionLocal() as session:
+        result = await session.execute(
+            select(TicketORM).where(TicketORM.id == ticket_id).options(selectinload(TicketORM.assignee))
+        )
+        ticket = result.scalar_one_or_none()
 
     return TicketWithSource(
-        id=raw["id"],
-        title=raw["todo"],
-        status=status,
-        priority=priority,
-        assignee=assignee,
-        source=raw,
+        id=ticket.id,
+        title=ticket.title,
+        status=ticket.status,
+        priority=ticket.priority,
+        assignee=ticket.assignee.name,
+        source=ticket.raw_json,
     )

@@ -9,8 +9,10 @@ services:
     environment:
       - EXTERNAL_API_URL=https://dummyjson.com
       - CACHE_TTL=300
+      - DATABASE_URL=sqlite+aiosqlite:///./tickethub.db
     volumes:
       - ../src:/app/src
+      - ../tickethub.db:/app/tickethub.db
   redis:
     image: redis:7-alpine
     ports:
