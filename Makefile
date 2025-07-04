@@ -9,6 +9,9 @@ lint:
 	ruff check .
 
 docker-build:
-	docker build -t tickethub .
+	docker build -f docker/Dockerfile -t tickethub .
+
+docker-up:
+	docker-compose -f docker/docker-compose.yml up --build
 
 .PHONY: run test lint docker-build

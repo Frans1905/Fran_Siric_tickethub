@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  app:
+    build: 
+      context: .. 
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - EXTERNAL_API_URL=https://dummyjson.com
+      - CACHE_TTL=300
+    volumes:
+      - ../src:/app/src
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
