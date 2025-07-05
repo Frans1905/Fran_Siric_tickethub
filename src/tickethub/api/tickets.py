@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Query, HTTPException
-from tickethub.services.ticket_service import fetch_tickets, fetch_ticket_by_id
+from tickethub.services.ticket_service import fetch_tickets, fetch_ticket_by_id, fetch_ticket_stats
 from tickethub.models.ticket import TicketResponse, TicketWithSource
 from typing import List, Optional
 import httpx
@@ -44,7 +44,13 @@ async def search_tickets(
 
     logger.debug(f"Found {len(tickets)} matching tickets.")
     return tickets
-   
+
+@router.get("/stats")
+async def get_ticket_stats():
+    logger.info("Fetching ticket statistics")
+    stats = await fetch_ticket_stats() 
+    return stats
+  
 
 @router.get("/{ticket_id}", response_model=TicketWithSource)
 async def get_ticket_details(ticket_id: int):

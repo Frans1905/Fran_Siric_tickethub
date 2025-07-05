@@ -28,6 +28,24 @@ async def fetch_tickets():
 
     return tickets
 
+async def fetch_ticket_stats():
+    logger.info("Fetching ticket stats")
+    async with AsyncSessionLocal() as session:
+        result = await session.execute(select(TicketORM))
+        tickets = result.scalars().all()
+
+    stats = {
+        "total": len(tickets),
+        "open": 0,
+        "closed": 0,
+        "priority": {"low": 0, "medium": 0, "high": 0},
+    }
+
+    for ticket in tickets:
+        stats[ticket.status] += 1
+        stats["priority"][ticket.priority] += 1
+
+    return stats
 
 async def fetch_ticket_by_id(ticket_id: int) -> TicketWithSource:
     logger.info(f"Fetching ticket with ID {ticket_id}")
@@ -50,3 +68,4 @@ async def fetch_ticket_by_id(ticket_id: int) -> TicketWithSource:
         assignee=ticket.assignee.name,
         source=ticket.raw_json,
     )
+

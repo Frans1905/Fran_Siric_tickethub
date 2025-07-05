@@ -52,3 +52,15 @@ def test_get_ticket_details_not_found(client):
     response = client.get("/tickets/999999")
     assert response.status_code == 404
     assert response.json()["detail"] == "Ticket not found"
+
+
+def test_stats_endpoint(client):
+    response = client.get("/tickets/stats")
+    assert response.status_code == 200
+
+    data = response.json()
+    assert "total" in data
+    assert "open" in data
+    assert "closed" in data
+    assert "priority" in data
+    assert all(p in data["priority"] for p in ["low", "medium", "high"])
