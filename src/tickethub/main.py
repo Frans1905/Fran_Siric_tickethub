@@ -1,6 +1,5 @@
-
 from fastapi import FastAPI
-from tickethub.api import tickets
+from tickethub.api import tickets, auth
 from tickethub.db.db import Base, engine
 import logging
 
@@ -12,6 +11,8 @@ logging.basicConfig(
 app = FastAPI(title="TicketHub", version="0.1.0")
 
 app.include_router(tickets.router, prefix="/tickets", tags=["Tickets"])
+app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+
 @app.on_event("startup")
 async def on_startup():
     async with engine.begin() as conn:

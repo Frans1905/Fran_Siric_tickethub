@@ -2,8 +2,8 @@ from tickethub.models.orm import Ticket as TicketORM
 from sqlalchemy import select
 from tickethub.db.db import AsyncSessionLocal
 from tickethub.models.ticket import TicketResponse, TicketWithSource
-from sqlalchemy.orm import selectinload
 from fastapi import HTTPException
+from sqlalchemy.orm import selectinload
 import logging
 
 logger = logging.getLogger(__name__)

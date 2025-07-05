@@ -5,7 +5,17 @@ from tickethub.main import app
 
 @pytest.fixture
 def client():
-    """TestClient fixture for FastAPI app."""
-    return TestClient(app)
+   return TestClient(app)
+
+@pytest.fixture
+def auth_headers(client):
+    # perform a real login to get a token
+    resp = client.post(
+        "/auth/login",
+        json={"username": "emilys", "password": "emilyspass"}
+    )
+    assert resp.status_code == 200, "Login failed in fixture"
+    token = resp.json()["token"]
+    return {"Authorization": f"Bearer {token}"}
 
 

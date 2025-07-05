@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Query, HTTPException
+from fastapi import APIRouter, Query, HTTPException, Depends
 from tickethub.services.ticket_service import fetch_tickets, fetch_ticket_by_id, fetch_ticket_stats
 from tickethub.models.ticket import TicketResponse, TicketWithSource
+from tickethub.services.auth_service import verify_token
 from typing import List, Optional
 import httpx
 import logging
@@ -9,11 +10,11 @@ router = APIRouter()
 
 logger = logging.getLogger(__name__)
 
-@router.get("/", response_model=List[TicketResponse])
+@router.get("/", response_model=List[TicketResponse], dependencies=[Depends(verify_token)])
 async def list_tickets(
     status: Optional[str] = Query(None, pattern="^(open|closed)$"),
     priority: Optional[str] = Query(None, pattern="^(low|medium|high)$"),
-    limit: Optional[int] = None
+    limit: Optional[int] = None,
 ):
     logger.info(f"Listing tickets with status={status}, priority={priority}, limit={limit}")
     tickets = await fetch_tickets()
@@ -29,7 +30,7 @@ async def list_tickets(
     return tickets
 
 
-@router.get("/search", response_model=List[TicketResponse])
+@router.get("/search", response_model=List[TicketResponse], dependencies=[Depends(verify_token)])
 async def search_tickets(
     q: Optional[str] = Query(None, min_length=1),
     limit: Optional[int] = None
@@ -45,14 +46,14 @@ async def search_tickets(
     logger.debug(f"Found {len(tickets)} matching tickets.")
     return tickets
 
-@router.get("/stats")
+@router.get("/stats", dependencies=[Depends(verify_token)])
 async def get_ticket_stats():
     logger.info("Fetching ticket statistics")
     stats = await fetch_ticket_stats() 
     return stats
   
 
-@router.get("/{ticket_id}", response_model=TicketWithSource)
+@router.get("/{ticket_id}", response_model=TicketWithSource, dependencies=[Depends(verify_token)])
 async def get_ticket_details(ticket_id: int):
     logger.info(f"Fetching ticket details for ID {ticket_id}")
     try:
