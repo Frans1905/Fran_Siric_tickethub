@@ -37,10 +37,10 @@ jobs:
           pip install ruff
 
       - name: Lint with ruff
-        run: ruff check .
+        run:  make lint
 
       - name: Run tests
-        run: pytest -v
+        run:  make test 
 
   docker-build:
     runs-on: ubuntu-latest
