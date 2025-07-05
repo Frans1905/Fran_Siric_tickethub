@@ -1,6 +1,3 @@
-import asyncio
-import httpx
-from .user_service import get_username_by_id
 from tickethub.models.orm import Ticket as TicketORM
 from sqlalchemy import select
 from tickethub.db.db import AsyncSessionLocal

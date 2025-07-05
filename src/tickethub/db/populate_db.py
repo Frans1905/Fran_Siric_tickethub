@@ -1,6 +1,5 @@
 import asyncio
 import httpx
-from sqlalchemy.ext.asyncio import AsyncSession
 from tickethub.db.db import AsyncSessionLocal, engine, Base
 from tickethub.models.orm import Ticket, User  
 from tickethub.services.ticket_service import PRIORITY_MAP

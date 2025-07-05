@@ -1,6 +1,5 @@
 
 import httpx
-from functools import lru_cache
 
 async def get_username_by_id(user_id: int) -> str:
     async with httpx.AsyncClient() as client:
