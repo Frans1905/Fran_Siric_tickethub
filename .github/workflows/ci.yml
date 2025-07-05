@@ -39,6 +39,9 @@ jobs:
       - name: Lint with ruff
         run:  make lint
 
+      - name: Populate test database
+        run: make seed-db
+
       - name: Run tests
         run:  make test 
 

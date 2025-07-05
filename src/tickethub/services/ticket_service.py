@@ -3,6 +3,7 @@ from sqlalchemy import select
 from tickethub.db.db import AsyncSessionLocal
 from tickethub.models.ticket import TicketResponse, TicketWithSource
 from sqlalchemy.orm import selectinload
+from fastapi import HTTPException
 
 PRIORITY_MAP = {0: "low", 1: "medium", 2: "high"}
 
@@ -30,6 +31,9 @@ async def fetch_ticket_by_id(ticket_id: int) -> TicketWithSource:
             select(TicketORM).where(TicketORM.id == ticket_id).options(selectinload(TicketORM.assignee))
         )
         ticket = result.scalar_one_or_none()
+    
+    if ticket is None:
+        raise HTTPException(status_code=404, detail="Ticket not found")
 
     return TicketWithSource(
         id=ticket.id,
