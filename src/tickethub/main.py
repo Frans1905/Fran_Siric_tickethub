@@ -2,6 +2,12 @@
 from fastapi import FastAPI
 from tickethub.api import tickets
 from tickethub.db.db import Base, engine
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,      
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
 
 app = FastAPI(title="TicketHub", version="0.1.0")
 

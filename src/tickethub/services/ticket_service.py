@@ -4,10 +4,14 @@ from tickethub.db.db import AsyncSessionLocal
 from tickethub.models.ticket import TicketResponse, TicketWithSource
 from sqlalchemy.orm import selectinload
 from fastapi import HTTPException
+import logging
+
+logger = logging.getLogger(__name__)
 
 PRIORITY_MAP = {0: "low", 1: "medium", 2: "high"}
 
 async def fetch_tickets():
+    logger.info("Fetching all tickets")
     async with AsyncSessionLocal() as session:
         result = await session.execute(select(TicketORM).options(selectinload(TicketORM.assignee)))
         tickets_orm = result.scalars().all()
@@ -26,6 +30,7 @@ async def fetch_tickets():
 
 
 async def fetch_ticket_by_id(ticket_id: int) -> TicketWithSource:
+    logger.info(f"Fetching ticket with ID {ticket_id}")
     async with AsyncSessionLocal() as session:
         result = await session.execute(
             select(TicketORM).where(TicketORM.id == ticket_id).options(selectinload(TicketORM.assignee))
@@ -33,8 +38,10 @@ async def fetch_ticket_by_id(ticket_id: int) -> TicketWithSource:
         ticket = result.scalar_one_or_none()
     
     if ticket is None:
+        logger.warning(f"Ticket with ID {ticket_id} not found.")
         raise HTTPException(status_code=404, detail="Ticket not found")
 
+    logger.debug(f"Found ticket: {ticket.id} - {ticket.title}")
     return TicketWithSource(
         id=ticket.id,
         title=ticket.title,
