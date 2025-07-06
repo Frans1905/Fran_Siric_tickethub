@@ -2,9 +2,12 @@ from fastapi import FastAPI
 from tickethub.api import tickets, auth
 from tickethub.db.db import Base, engine
 import logging
+from tickethub.config import settings
+
+log_level = getattr(logging, settings.log_level.upper(), logging.INFO)
 
 logging.basicConfig(
-    level=logging.INFO,      
+    level=log_level,      
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 

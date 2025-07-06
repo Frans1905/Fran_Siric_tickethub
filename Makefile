@@ -12,7 +12,10 @@ docker-build:
 	docker build -f docker/Dockerfile -t tickethub .
 
 docker-up:
-	docker-compose -f docker/docker-compose.yml up --build
+	docker-compose --env-file .env -f docker/docker-compose.yml up --build
+
+docker-down:
+	docker-compose --env-file .env -f docker/docker-compose.yml down -v --remove-orphans
 
 seed-db:
 	PYTHONPATH=src python src/tickethub/db/populate_db.py

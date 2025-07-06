@@ -7,9 +7,8 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - EXTERNAL_API_URL=https://dummyjson.com
-      - CACHE_TTL=300
-      - DATABASE_URL=sqlite+aiosqlite:///./tickethub.db
+      - EXTERNAL_API_URL=${EXTERNAL_API_URL}
+      - DATABASE_URL= ${DATABASE_URL}
     volumes:
       - ../src:/app/src
       - ../tickethub.db:/app/tickethub.db
