@@ -68,30 +68,30 @@ Your Pydantic `Settings` class will auto‑load the correct file based on `APP_E
 ## 🔍 Setup & Local Development
 
 1. **Clone**
-   ```bash
-git clone git@github.com:Frans1905/Fran_Siric_tickethub.git
-cd tickethub
+   ```
+    git clone git@github.com:Frans1905/Fran_Siric_tickethub.git
+    cd tickethub
    ```
 2. **Virtual env**
    ```bash
-python3.11 -m venv .venv
-source .venv/bin/activate
+    python3.11 -m venv .venv
+    source .venv/bin/activate
    ```
 3. **Install**
    ```bash
-pip install -r requirements.txt
+    pip install -r requirements.txt
    ```
 4. **Seed database** (once / after DB schema changes)
    ```bash
-make seed_db
+    make seed_db
    ```
 5. **Run app locally**
 
-To run the app locally either a redis server needs to be set up, or CACHING_ENABLED needs to be set to 0 in .env.local.
+    To run the app locally either a redis server needs to be set up, or CACHING_ENABLED needs to be set to 0 in .env.local.
 
    ```bash
-make run       # or
-PYTHONPATH=src uvicorn src.tickethub.main:app --reload
+    make run       # or
+    PYTHONPATH=src uvicorn src.tickethub.main:app --reload
    ```
 
 6. **Docs**
@@ -104,8 +104,8 @@ PYTHONPATH=src uvicorn src.tickethub.main:app --reload
 
 - **Unit tests** and **integration tests**:
   ```bash
-make test       #or
-PYTHONPATH=src APP_ENV=test pytest -v 
+    make test       #or
+    PYTHONPATH=src APP_ENV=test pytest -v 
   ```
 
 - **Test env** uses `.env.test` and a separate SQLite DB/Redis index
@@ -114,10 +114,23 @@ PYTHONPATH=src APP_ENV=test pytest -v
 
 ## Authentication through SwaggerUI
 
-To test the endpoints manually first go to http:/127.0.0.1:8000/docs. Then request a token using the /auth/login api. This api
-return an access token through dummyjson's "/auth/login" api. The username "emilys" and password "emilyspass" can be used to log in.
-To see all the usernames and passwords go to https://dummyjson.com/users. After getting the token, copy it and paste it into the 
-authorization window in the top right of SwaggerUI. Once this is done HTTPBearer will take care of the token and you will be able to use all the endpoints.
+
+1. **Obtain a JWT**  
+   - Navigate to Swagger UI: `http://127.0.0.1:8000/docs`  
+   - Expand **`POST /auth/login`** and click **Try it out**  
+   - Enter valid credentials (e.g. `username`: `emilys`, `password`: `emilyspass`)  
+   - Execute to receive a JSON response including your `token`  
+
+2. **Authorize in Swagger**  
+   - Click the **Authorize** button (padlock icon) in the top‑right corner  
+   - Paste the token
+   - Click **Authorize** then **Close**
+
+3. **Call protected endpoints**  
+   - All routes with the **HTTPBearer** dependency will now include your JWT  
+   - Explore `/tickets`, `/tickets/{id}`, `/tickets/stats`, etc.
+
+> 👀 **Tip**: To discover other DummyJSON user credentials, view [https://dummyjson.com/users](https://dummyjson.com/users).
 
 ## 🐳 Docker & Docker Compose
 
