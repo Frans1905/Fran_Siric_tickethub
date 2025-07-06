@@ -2,6 +2,8 @@
 import pytest
 from fastapi.testclient import TestClient
 from tickethub.main import app
+import os
+from dotenv import load_dotenv
 
 @pytest.fixture
 def client():
@@ -18,4 +20,6 @@ def auth_headers(client):
     token = resp.json()["token"]
     return {"Authorization": f"Bearer {token}"}
 
+os.environ["APP_ENV"] = "test"
 
+load_dotenv(".env.test", override=True)

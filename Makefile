@@ -3,7 +3,7 @@ run:
 	PYTHONPATH=src uvicorn src.tickethub.main:app --reload
 
 test:
-	PYTHONPATH=src pytest -v
+	PYTHONPATH=src APP_ENV=test pytest -v
 
 lint:
 	ruff check .

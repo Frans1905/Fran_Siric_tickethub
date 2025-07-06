@@ -18,7 +18,6 @@ async def list_tickets(
 ):
     logger.info(f"Listing tickets with status={status}, priority={priority}, limit={limit}")
     tickets = await fetch_tickets()
-    # Filter
     if status:
         tickets = [t for t in tickets if t.status == status]
     if priority:

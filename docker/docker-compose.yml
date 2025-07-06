@@ -9,6 +9,11 @@ services:
     environment:
       - EXTERNAL_API_URL=${EXTERNAL_API_URL}
       - DATABASE_URL= ${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - CACHE_TTL=${CACHE_TTL}
+      - LOG_LEVEL=${LOG_LEVEL}
+      - RATE_LIMIT=${RATE_LIMIT}
+      - CACHING_ENABLED=${CACHING_ENABLED}
     volumes:
       - ../src:/app/src
       - ../tickethub.db:/app/tickethub.db
