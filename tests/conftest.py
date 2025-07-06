@@ -5,6 +5,7 @@ from tickethub.main import app
 import os
 from dotenv import load_dotenv
 
+
 @pytest.fixture
 def client():
    return TestClient(app)
@@ -23,3 +24,5 @@ def auth_headers(client):
 os.environ["APP_ENV"] = "test"
 
 load_dotenv(".env.test", override=True)
+
+

@@ -64,3 +64,4 @@ def test_stats_endpoint(client, auth_headers):
     assert "closed" in data
     assert "priority" in data
     assert all(p in data["priority"] for p in ["low", "medium", "high"])
+
