@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from tickethub.api import tickets, auth
+from fastapi.staticfiles import StaticFiles
+from tickethub.api import tickets, auth, doc
 from tickethub.db.db import Base, engine
 import logging
 from tickethub.config import settings
@@ -26,6 +27,10 @@ app.add_middleware(SlowAPIMiddleware)
 
 app.include_router(tickets.router, prefix="/tickets", tags=["Tickets"])
 app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+
+app.mount("/static", StaticFiles(directory="src/static"), name="static")
+
+app.include_router(doc.router)
 
 @app.on_event("startup")
 async def on_startup():
